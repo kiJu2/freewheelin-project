@@ -1,7 +1,6 @@
 import React from 'react';
-import {BrowserRouter, Route, Switch} from 'react-router-dom'
+import {Route, Switch} from 'react-router-dom'
 
-import logo from './logo.svg';
 import './App.css';
 
 import Editor from './components/Editor';

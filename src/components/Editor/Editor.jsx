@@ -14,6 +14,7 @@ const Editor = () =>{
   const [Active, setActive] = useState(null);
 
   useEffect(() => {
+    localStorage.clear();
     getProblems().then(response=>{setProblems(response)});
     
     return () => {
@@ -21,44 +22,64 @@ const Editor = () =>{
   }, []);
 
   const getProblems = async ()=>{
+    const storageProblems = localStorage.getItem('problems');
+    if(storageProblems)
+      return await JSON.parse(storageProblems);
+    
     const URL = 'http://localhost:3333/fe-problems';
-    return await request(URL).then(response=> response);
+    const response = await request(URL).then(response=> response);
+
+    localStorage.setItem('problems', JSON.stringify(response));
+
+    return response;
   }
   const getSimilars = async ()=>{
+    const storageSimilars = localStorage.getItem('similars');
+    if(storageSimilars)
+      return await JSON.parse(storageSimilars);
+
     const URL = 'http://localhost:3333/fe-similars';
-    return await request(URL).then(response=> response);
+    const response = await request(URL).then(response=> response);
+
+    localStorage.setItem('similars', JSON.stringify(response));
+
+    return response
   }
 
-  const handleClickActive = (id) =>{
+  const handleClickActive = (id, index) =>{
     getSimilars().then(response=>{setSimilars(response)});
   }
-  const handleClickDelete = (id) =>{
-    const isDeleteActive = id === Active;
-    setProblems(Problems.filter(v=> v.id !== id));
+  const handleClickDelete = (id, index) =>{
+    const isDeleteActive = index === Active;
+    const isHigherActive = index < Active;
+    const newProblems = Problems.filter((_,idx)=> idx !== index);
+    setProblems(newProblems);
     if(isDeleteActive){
       setSimilars([]);
-      setActive(0);
+      setActive(null);
     }
-
+    if(isHigherActive){
+      setActive(Active-1);
+    }
   }
   
-  const handleClickAdd = (id) =>{
-    const clickedSimilar = Similars.filter(v=>v.id===id)[0];
-    const problemIdx = (function(){
-      for(let idx=0; idx<Problems.length; idx++){
-        if(Problems[idx].id === Active) return idx;
-      }
-    })();
-    const newProblems = [...Problems.slice(0, problemIdx+1), clickedSimilar, ...Problems.slice(problemIdx+1, Problems.length)];
+  const handleClickAdd = (id, index) =>{
+    const clickedSimilar = Similars[index];
+    const newProblems = [...Problems.slice(0, Active+1), clickedSimilar, ...Problems.slice(Active+1, Problems.length)];
     const newSimilars = Similars.filter(v=>v.id!==id);
 
     setProblems(newProblems);
     setSimilars(newSimilars);
   }
-  const handleClickChange = (id) =>{
-    // 
-    // handleClickAdd와 같이 스왑을 진행합니다.
-    // 
+  const handleClickChange = (id, index) =>{
+    const clickedSimilar = Similars[index];
+    const targetProblem = Problems[Active];
+
+    const newProblems = [...Problems.slice(0, Active), clickedSimilar, ...Problems.slice(Active+1, Problems.length)];
+    const newSimilars = [...Similars.slice(0, index), targetProblem, ...Similars.slice(index+1, Similars.length)];
+
+    setProblems(newProblems);
+    setSimilars(newSimilars);
   }
 
   return (

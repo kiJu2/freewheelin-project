@@ -14,15 +14,6 @@ import Button from '../../Button'
 const Problem = ({title, align, datas, handles, Active, functions}) =>{
   const {onClickActive, onClickDelete} = handles;
   const {setActive} = functions;
-  // const selectedStyle = `
-    
-  // `
-
-  // let activeTarget = null;
-
-  // const setSelected = (target) =>{
-  //   activeTarget
-  // }
 
   const template = () =>{
     return (
@@ -30,35 +21,34 @@ const Problem = ({title, align, datas, handles, Active, functions}) =>{
         <Header align={align}>{title}</Header>
         <ProblemContainer>
           {datas.map((data, idx)=>(
-              <div>
-                <ProblemHeader>
-                  <Type>{data.problemType}</Type>
-                  <Title>{data.unitName}</Title>
-                  <ButtonOuter>
+              <div key={idx+'div'}>
+                <ProblemHeader key={idx+'problemheader'}>
+                  <Type key={idx+'type'}>{data.problemType}</Type>
+                  <Title key={idx+'title'}>{data.unitName}</Title>
+                  <ButtonOuter key={idx+'buttonouter'}>
                     <Button
                       key={data.id+'similar'} 
                       id={data.id} type='similar' 
+                      selected={Active === idx}
                       display='유사문항'
-                      selected={Active === data.id}
                       onClick={_=>{
-                        setActive(data.id);
-                        onClickActive(data.id);
-                        console.log(Active);
+                        setActive(idx);
+                        onClickActive(data.id, idx);
                         }}>
                     </Button>
                     <Button 
                       key={data.id+'delete'} 
                       id={data.id} type='delete' 
                       display='삭제' 
-                      onClick={()=>onClickDelete(data.id)}>
+                      onClick={()=>onClickDelete(data.id, idx)}>
                     </Button>
                   </ButtonOuter>
                 </ProblemHeader>
-                <Body>
-                  <SideBar>
-                  <Number>{idx+1}</Number>
+                <Body key={idx+'body'}>
+                  <SideBar key={idx+'sidebar'}>
+                  <Number key={idx+'number'}>{idx+1}</Number>
                   </SideBar>
-                  <Img src={data.problemURL}/>
+                  <Img key={idx+'img'} src={data.problemURL}/>
                 </Body>
               </div>
             )

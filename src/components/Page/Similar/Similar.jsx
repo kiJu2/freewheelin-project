@@ -40,31 +40,34 @@ const Similar = ({title, align, datas, handles}) =>{
           <Header align={align}>{title}</Header>
           <ProblemContainer>
             {datas.map((data, idx)=>(
-                <div>
-                  <ProblemHeader>
-                    <Type>{data.problemType}</Type>
-                    <Title>{data.unitName}</Title>
-                    <ButtonOuter>
+                <div key={idx+'div'}>
+                  <ProblemHeader key={idx+'problemheader'}>
+                    <Type key={idx+'type'}>{data.problemType}</Type>
+                    <Title key={idx+'title'} title={idx+'title'}>{data.unitName}</Title>
+                    <ButtonOuter key={idx+'buttonouter'}>
                       <Button 
                         onClick={_=>{
-                          onClickAdd(data.id);
+                          onClickAdd(data.id, idx);
                         }}
                         key={data.id+'add'} 
                         id={data.id} 
                         type='add' 
                         display='추가'></Button>
                       <Button 
+                        onClick={_=>{
+                          onClickChange(data.id, idx);
+                        }}
                         key={data.id+'change'} 
                         id={data.id} 
                         type='change' 
                         display='교체'></Button>
                     </ButtonOuter>
                   </ProblemHeader>
-                  <Body>
-                    <SideBar>
-                    <Number>{idx+1}</Number>
+                  <Body key={idx+'body'}>
+                    <SideBar key={idx+'siderbar'}>
+                    <Number key={idx+'number'}>{idx+1}</Number>
                     </SideBar>
-                    <Img src={data.problemURL}/>
+                    <Img key={idx+'img'} src={data.problemURL}/>
                   </Body>
                 </div>
               )

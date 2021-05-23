@@ -1,12 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { prototype } from 'events';
-
-import {css} from '@emotion/css';
 
 import {
   ButtonWrapper,
-  Select,
 } from './Button.styles';
 
 
